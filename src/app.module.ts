@@ -8,6 +8,9 @@ import * as Joi from '@hapi/joi'
 import { AuthModule } from './auth/auth.module'
 import { APP_GUARD } from '@nestjs/core'
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard'
+import { ChatModule } from './chat/chat.module'
+import { MessageModule } from './message/message.module'
+import { LoggerModule } from './common/middleware/logger.module'
 
 @Module({
 	imports: [
@@ -23,7 +26,10 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard'
 		}),
 		DatabaseModule,
 		UsersModule,
-		AuthModule
+		AuthModule,
+		ChatModule,
+		MessageModule,
+		LoggerModule
 	],
 	controllers: [AppController],
 	providers: [

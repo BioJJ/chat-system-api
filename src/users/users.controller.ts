@@ -12,10 +12,22 @@ import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { User } from './entities/user.entity'
 import { IsPublic } from 'src/auth/decorators/is-public.decorator'
-import { ApiTags, ApiBody } from '@nestjs/swagger'
+import {
+	ApiTags,
+	ApiBody,
+	ApiUnauthorizedResponse,
+	ApiForbiddenResponse,
+	ApiInternalServerErrorResponse
+} from '@nestjs/swagger'
+import { DefaultUnauthorizedResponse } from 'src/common/swagger/DefaultUnauthorizedResponse'
+import { DefaultForbiddenResponse } from 'src/common/swagger/DefaultForbiddenResponse'
+import { DefaultInternalServerErrorResponse } from 'src/common/swagger/DefaultInternalServerErrorResponse'
 
 @Controller('users')
 @ApiTags('users')
+@ApiUnauthorizedResponse(DefaultUnauthorizedResponse)
+@ApiForbiddenResponse(DefaultForbiddenResponse)
+@ApiInternalServerErrorResponse(DefaultInternalServerErrorResponse)
 export class UsersController {
 	constructor(private readonly usersService: UsersService) {}
 
