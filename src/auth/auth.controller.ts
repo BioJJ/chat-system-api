@@ -6,7 +6,12 @@ import {
 	Req,
 	UseGuards
 } from '@nestjs/common'
-import { ApiBody, ApiForbiddenResponse, ApiInternalServerErrorResponse, ApiTags } from '@nestjs/swagger'
+import {
+	ApiBody,
+	ApiForbiddenResponse,
+	ApiInternalServerErrorResponse,
+	ApiTags
+} from '@nestjs/swagger'
 import { AuthService } from './auth.service'
 import { IsPublic } from './decorators/is-public.decorator'
 import { LocalAuthGuard } from './guards/local-auth.guard'

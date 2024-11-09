@@ -1,80 +1,77 @@
-import { LoggerMiddleware } from './logger.middleware'; // ajuste o caminho conforme necessário
-import { Test, TestingModule } from '@nestjs/testing';
-import { Request, Response, NextFunction } from 'express';
+import { LoggerMiddleware } from './logger.middleware' // ajuste o caminho conforme necessário
+import { Test, TestingModule } from '@nestjs/testing'
+import { Request, Response, NextFunction } from 'express'
 
 describe('LoggerMiddleware', () => {
-  let loggerMiddleware: LoggerMiddleware;
-  let mockRequest: Partial<Request>;
-  let mockResponse: Partial<Response>;
-  let nextFunction: NextFunction;
+	let loggerMiddleware: LoggerMiddleware
+	let mockRequest: Partial<Request>
+	let mockResponse: Partial<Response>
+	let nextFunction: NextFunction
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [LoggerMiddleware],
-    }).compile();
+	beforeEach(async () => {
+		const module: TestingModule = await Test.createTestingModule({
+			providers: [LoggerMiddleware]
+		}).compile()
 
-    loggerMiddleware = module.get<LoggerMiddleware>(LoggerMiddleware);
+		loggerMiddleware = module.get<LoggerMiddleware>(LoggerMiddleware)
 
-    mockRequest = {
-      method: 'GET',
-      originalUrl: '/test',
-      headers: {
-        'user-agent': 'test-agent',
-      },
-    };
+		mockRequest = {
+			method: 'GET',
+			originalUrl: '/test',
+			headers: {
+				'user-agent': 'test-agent'
+			}
+		}
 
-    mockResponse = {
-      statusCode: 200,
-      on: jest.fn(),
-      end: jest.fn(),
-    };
+		mockResponse = {
+			statusCode: 200,
+			on: jest.fn(),
+			end: jest.fn()
+		}
 
-    nextFunction = jest.fn();
-  });
+		nextFunction = jest.fn()
+	})
 
-  it('should capture errors', () => {
-    const mockError = new Error('Some error');
+	it('should capture errors', () => {
+		const mockError = new Error('Some error')
 
-    loggerMiddleware.use(
-      mockRequest as Request,
-      mockResponse as Response,
-      nextFunction,
-    );
+		loggerMiddleware.use(
+			mockRequest as Request,
+			mockResponse as Response,
+			nextFunction
+		)
 
-    // Simule o evento de erro da resposta
-    (mockResponse.on as jest.Mock).mockImplementation((event, callback) => {
-      if (event === 'error') {
-        callback(mockError);
-      }
-    });
+		// Simule o evento de erro da resposta
+		;(mockResponse.on as jest.Mock).mockImplementation((event, callback) => {
+			if (event === 'error') {
+				callback(mockError)
+			}
+		})
 
-    expect(nextFunction).toHaveBeenCalled();
-  });
+		expect(nextFunction).toHaveBeenCalled()
+	})
 
-  it('should measure response time', () => {
-    const startTimeSpy = jest.spyOn(Date, 'now').mockReturnValue(1000);
-    loggerMiddleware.use(
-      mockRequest as Request,
-      mockResponse as Response,
-      nextFunction,
-    );
+	it('should measure response time', () => {
+		const startTimeSpy = jest.spyOn(Date, 'now').mockReturnValue(1000)
+		loggerMiddleware.use(
+			mockRequest as Request,
+			mockResponse as Response,
+			nextFunction
+		)
 
-    // Simule o evento de finalização da resposta
-    (mockResponse.on as jest.Mock).mockImplementation((event, callback) => {
-      if (event === 'finish') {
-        // Simule o tempo passado (1 segundo para simplificar)
-        jest.spyOn(Date, 'now').mockReturnValue(2000); // Depois de 1 segundo
-        callback();
-      }
-    });
+		// Simule o evento de finalização da resposta
+		;(mockResponse.on as jest.Mock).mockImplementation((event, callback) => {
+			if (event === 'finish') {
+				// Simule o tempo passado (1 segundo para simplificar)
+				jest.spyOn(Date, 'now').mockReturnValue(2000) // Depois de 1 segundo
+				callback()
+			}
+		})
 
-    expect(nextFunction).toHaveBeenCalled();
+		expect(nextFunction).toHaveBeenCalled()
 
-    expect(mockResponse.on).toHaveBeenCalledWith(
-      'finish',
-      expect.any(Function),
-    );
+		expect(mockResponse.on).toHaveBeenCalledWith('finish', expect.any(Function))
 
-    startTimeSpy.mockRestore();
-  });
-});
+		startTimeSpy.mockRestore()
+	})
+})

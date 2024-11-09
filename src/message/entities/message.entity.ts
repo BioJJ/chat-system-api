@@ -1,11 +1,6 @@
-import {
-	Entity,
-	Column,
-	ManyToOne,
-	JoinColumn
-} from 'typeorm'
+import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm'
 import { User } from './../../users/entities/user.entity'
-import { BaseEntity } from 'src/bases/entities/base.entity'
+import { BaseEntity } from './../../bases/entities/base.entity'
 
 @Entity('messages')
 export class Message extends BaseEntity {
