@@ -1,30 +1,43 @@
-import { ValidationPipe } from '@nestjs/common'
+import { ValidationPipe, VersioningType } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
-
 import { AppModule } from './app.module'
 
-async function bootstrap() {
-	const app = await NestFactory.create(AppModule)
+async function bootstrap(): Promise<void> {
+	const app = await NestFactory.create(AppModule, { cors: true })
 	app.useGlobalPipes(
 		new ValidationPipe({
-			transform: true,
 			whitelist: true,
-			forbidNonWhitelisted: true
+			forbidUnknownValues: false,
+			transform: true
 		})
 	)
 
+	app.enableVersioning({
+		type: VersioningType.URI
+	})
+
 	const config = new DocumentBuilder()
-		.setTitle('API')
-		.setDescription('API BASE.')
+		.addSecurity('bearer', {
+			type: 'http',
+			scheme: 'bearer'
+		})
+		.setTitle('NestJS Repository Pattern')
+		.setDescription('Repository for initialize the project.')
 		.setVersion('1.0')
+		.addBearerAuth()
 		.build()
 
 	const document = SwaggerModule.createDocument(app, config)
-	SwaggerModule.setup('api', app, document)
+	SwaggerModule.setup('docs', app, document)
 
-	app.enableCors()
+	const PORT = process.env.PORT ?? 3000
 
-	await app.listen(process.env.PORT ? parseInt(process.env.PORT) : 3000)
+	await app.listen(PORT, '0.0.0.0')
+
+	console.log(`[🤖]: Application is running on: ${await app.getUrl()}`)
 }
-bootstrap()
+
+bootstrap().catch((e) => {
+	console.log(e)
+})

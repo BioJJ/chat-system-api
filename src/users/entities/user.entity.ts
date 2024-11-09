@@ -1,7 +1,7 @@
 import { Column, Entity, BeforeInsert, OneToMany } from 'typeorm'
 import { hashSync } from 'bcrypt'
-import { BaseEntity } from 'src/bases/entities/base.entity'
-import { Message } from 'src/message/entities/message.entity'
+import { BaseEntity } from './../../bases/entities/base.entity'
+import { Message } from './../../message/entities/message.entity'
 
 @Entity()
 export class User extends BaseEntity {
