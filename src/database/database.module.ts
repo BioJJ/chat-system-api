@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm'
+import { Message } from 'src/message/entities/message.entity'
 import { User } from 'src/users/entities/user.entity'
 
 @Module({
@@ -17,7 +18,7 @@ import { User } from 'src/users/entities/user.entity'
 				database: configService.get('DB_DB'),
 				synchronize: true,
 				logging: true,
-				entities: [User]
+				entities: [User, Message]
 			})
 		})
 	]
